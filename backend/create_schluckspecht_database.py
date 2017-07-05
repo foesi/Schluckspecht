@@ -11,9 +11,11 @@ class User(Base):
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    user_name = Column(String(250), nullable=False)
     cool_name = Column(String(250))
+    full_name = Column(String(250))
     on_vacation = Column(Boolean, nullable=False, default=False)
+    is_active = Column(Boolean, nullable=False, default=False)
  
 class BeerCaseLog(Base):
     __tablename__ = 'beercaselog'
