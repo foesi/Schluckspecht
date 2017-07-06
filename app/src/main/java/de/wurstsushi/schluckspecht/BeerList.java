@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 
 public class BeerList extends AppCompatActivity {
 
@@ -23,7 +24,16 @@ public class BeerList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            }
+        });
+
+        ImageButton button = (ImageButton) findViewById(R.id.buttonBeerLeer);
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Snackbar.make(view, "Es gib kein Bier mehr, es muss Bier her!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                return true;
             }
         });
     }
