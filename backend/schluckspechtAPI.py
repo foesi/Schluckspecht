@@ -11,6 +11,8 @@ from flask_restful import Resource, Api, reqparse
 #import database tables
 from create_schluckspecht_database import User, BeerCaseLog
 
+import json
+
 # flask instantiation
 app = Flask(__name__) # create the application instance
 app.config.from_object(__name__) # load config from this file , flaskr.py
@@ -36,6 +38,7 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
+
 #####################################################
 # Begin API functions here
 
@@ -47,8 +50,10 @@ api.add_resource(HelloWorld, '/api')
 
 class Login(Resource):
     def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('UserName', type=String)
         args = parser.parse_args()
-        result = session.query(User.user_name).filter(User.user_name == args['Username'])
+        result = session.query(User.user_name).filter(User.user_name == args['UserName'])
         if result is None:
             return {'User':False, 'Token':-1, 'ID':-1},400
         else:
@@ -59,17 +64,33 @@ api.add_resource(Login, '/api/login')
 
 class UserList(Resource):
     def get(self):
-        #users = User.query.all()
-        #return_token = {}
         beer_bought = session.query(BeerCaseLog.user_id,BeerCaseLog.price,BeerCaseLog.brand,User.user_name,
                                            func.max(BeerCaseLog.timestamp)) \
                                  .group_by(BeerCaseLog.user_id).join(User, User.id == BeerCaseLog.user_id).all()
-        print(beer_bought)
-        #return_token[users[i].]
-        return {}
+        return jsonify(beer_bought)
 
 api.add_resource(UserList, '/api/list')
 
+class BeerList(Resource):
+    def get(self,user_id):
+        beerlist = session.query(BeerCaseLog.brand, BeerCaseLog.price, BeerCaseLog.timestamp)\
+                          .filter(User.id == user_id).all()
+        return jsonify(beerlist)
+
+    def post(self,user_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('Brand', type=String)
+        parser.add_argument('Price', type=Float)
+        args = parser.parse_args()
+        beer_case = BeerCaseLog()
+        beer_case.price = args['Price']
+        beer_case.brand = args['Brand']
+        beer_case.user_id = user_id
+        beer_case.timestamp = func.now()
+        session.insert(beer_case)
+        return session.flush()
+
+api.add_resource(BeerList, '/api/beerlog/<int:user_id>')
 
 
 
