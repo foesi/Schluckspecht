@@ -15,6 +15,13 @@
         tools:layout_editor_absoluteX="-16dp"
         tools:layout_editor_absoluteY="-22dp">
 
+        <TableLayout
+            android:id="@+id/latestBeerTable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:stretchColumns="1" />
+
+
         <ImageButton
             android:id="@+id/buttonBeerLeer"
             android:layout_width="wrap_content"
