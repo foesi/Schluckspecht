@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 
+import de.wurstsushi.schluckspecht.dialogs.BeerBoughtDialog;
+
 public class BeerList extends AppCompatActivity {
 
     @Override

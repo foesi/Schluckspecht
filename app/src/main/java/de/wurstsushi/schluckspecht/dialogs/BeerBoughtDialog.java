@@ -1,4 +1,4 @@
-package de.wurstsushi.schluckspecht;
+package de.wurstsushi.schluckspecht.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import de.wurstsushi.schluckspecht.R;
 
 
 public class BeerBoughtDialog extends AppCompatDialogFragment {
