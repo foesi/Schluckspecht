@@ -19,6 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".receivers.BeerReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="de.wurstsushi.schluckspecht.ACTION_BEER_BOUGHT"/>
+                <action android:name="de.wurstsushi.schluckspecht.ACTION_BEER_POSTPONE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

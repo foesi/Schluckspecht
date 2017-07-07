@@ -1,6 +1,10 @@
 package de.wurstsushi.schluckspecht;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +20,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import de.wurstsushi.schluckspecht.dialogs.BeerBoughtDialog;
+import de.wurstsushi.schluckspecht.notifications.NotificationFactory;
 
 public class BeerList extends AppCompatActivity {
 
@@ -72,8 +77,42 @@ public class BeerList extends AppCompatActivity {
         button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Snackbar.make(view, "Es gib kein Bier mehr, es muss Bier her!", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                final BaseTransientBottomBar.BaseCallback<Snackbar> callback =
+                        new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+
+                                super.onDismissed(transientBottomBar, event);
+
+                                Notification notification = new NotificationFactory(
+                                        getApplicationContext()).newBeerNotification();
+
+                                notification.flags |= Notification.FLAG_NO_CLEAR;
+                                notification.flags |= Notification.FLAG_ONGOING_EVENT;
+
+                                NotificationManager notificationManager = (NotificationManager)
+                                        getSystemService(Context.NOTIFICATION_SERVICE);
+
+                                notificationManager.notify(
+                                        NotificationFactory.NEW_BEER_NOTIFICATION_ID,
+                                        notification);
+                            }
+                        };
+
+                final Snackbar snackbar =
+                        Snackbar.make(view, "Es gib kein Bier mehr, es muss Bier her!",
+                                Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View view) {
+                                snackbar.removeCallback(callback);
+                            }
+                        });
+                snackbar.addCallback(callback);
+                snackbar.show();
                 return true;
             }
         });
