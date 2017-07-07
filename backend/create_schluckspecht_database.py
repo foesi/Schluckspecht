@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Datetime, Float
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -22,9 +22,9 @@ class BeerCaseLog(Base):
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    timestamp = Column(Datetime, nullable=False)
+    timestamp = Column(DateTime, nullable=False)
     brand = Column(String(250))
-    price = Column(Float, nullable=False)
+    price = Column(Float)
     user_id = Column(Integer, ForeignKey('user.id'))
 
  

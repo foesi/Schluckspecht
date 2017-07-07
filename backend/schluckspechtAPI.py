@@ -1,15 +1,15 @@
 # import sql magic
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Datetime, Float, func
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime, Float, func
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
 
 # import flask API magic
 from flask import Flask, request, g, jsonify, abort, make_response
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 
 #import database tables
-from create_schluckspecht_databse import User, BeerCaseLog
+from create_schluckspecht_database import User, BeerCaseLog
 
 # flask instantiation
 app = Flask(__name__) # create the application instance
@@ -43,12 +43,12 @@ class HelloWorld(Resource):
     def get(self):
         return {'hello': 'world'}
 
-api.add_resource(HelloWorld, '/')
+api.add_resource(HelloWorld, '/api')
 
 class Login(Resource):
     def post(self):
         args = parser.parse_args()
-        result = User.query(user_name).filter(User.user_name == args['Username'])
+        result = session.query(User.user_name).filter(User.user_name == args['Username'])
         if result is None:
             return {'User':False, 'Token':-1, 'ID':-1},400
         else:
@@ -56,11 +56,17 @@ class Login(Resource):
 
 api.add_resource(Login, '/api/login')
 
+
 class UserList(Resource):
     def get(self):
-        users = User.query(user_name, id, cool_name, on_vacation, is_active).all()
-        for i in enumerate(users):
-            beer_bought[i] = BeerCaseLog.query(func.max(BeerCaseLog.timestamp)).group_by(BeerCaseLog.user_id)
+        #users = User.query.all()
+        #return_token = {}
+        beer_bought = session.query(BeerCaseLog.user_id,BeerCaseLog.price,BeerCaseLog.brand,User.user_name,
+                                           func.max(BeerCaseLog.timestamp)) \
+                                 .group_by(BeerCaseLog.user_id).join(User, User.id == BeerCaseLog.user_id).all()
+        print(beer_bought)
+        #return_token[users[i].]
+        return {}
 
 api.add_resource(UserList, '/api/list')
 
